@@ -7,3 +7,9 @@ are you happy like me
 okey iam happy too
 ## ***** ##
 """
+
+"""
+start working on assist1 
+and this is the first commit from
+assist1
+"""
