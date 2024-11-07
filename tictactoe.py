@@ -67,8 +67,23 @@ class Menu(): # Composition with Game
                 return        
 
 class Game:
-    pass
-
+    def __init__(self):
+        self.players= [Player(), Player()]
+        self.board= Board()
+        self.menu= Menu()
+        self.currentPlayerIndex= 0
+    def Start_game(self):
+        pass
+    def Play_turn(self):
+        pass
+    def Check_win(self):
+        pass
+    def Check_draw(self):
+        pass
+    def Restart_game(slef):
+        pass
+    def Quit_game(self):
+        pass
 
 
 x = Board.Display_board()
