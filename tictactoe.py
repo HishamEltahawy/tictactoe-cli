@@ -12,18 +12,24 @@ Game Logic:
     3- game start, quit the game
     4- player1 name & symbol, player2 name & symbol
     5- board is displayed
-    6- game loop until win or draw
+    6- game loop until win or draw (Play_game() method in Game class)
     7- restart game, quit game
 """
+import os
+
+def Clean_screen():
+    os.system("cls" if os.name == "nt" else "clean")
 
 class Player: # Combosition with Game
+    usedNameAndSymbol= []
     def __init__(self):
         self.name = ""
         self.symbol= ""
     def Choose_name(self):
         while True:
             inputName= input("Type your name: ")
-            if inputName.isalpha() and len(inputName) >= 2:
+            if inputName not in Player.usedNameAndSymbol and inputName.isalpha() and len(inputName) >= 2 :
+                self.usedNameAndSymbol.append(inputName)
                 self.name = inputName
                 break
             else:
@@ -31,7 +37,8 @@ class Player: # Combosition with Game
     def Choose_symbol(self):
         while True:
             inputSymbol= input("Type your symbol: ")
-            if inputSymbol.isalpha() and len(inputSymbol) == 1:
+            if inputSymbol not in Player.usedNameAndSymbol and inputSymbol.isalpha() and len(inputSymbol) == 1 :
+                self.usedNameAndSymbol.append(inputSymbol)
                 self.symbol = inputSymbol
                 break
             else:
@@ -58,12 +65,13 @@ class Menu(): # Composition with Game
 2- Quit game""")
         while True:
             if menu1Choice.isdigit() and len(menu1Choice) == 1:
-                return
+                return menu1Choice
     def End_menu(self) -> str:
         menu1Choice= input("""1- Restart game
 2- Quit game""")
         while True:
             if menu1Choice.isdigit() and len(menu1Choice) == 1:
+                menu1Choice.append()
                 return        
 
 class Game:
@@ -71,20 +79,52 @@ class Game:
         self.players= [Player(), Player()]
         self.board= Board()
         self.menu= Menu()
-        self.currentPlayerIndex= 0
+        self.currentPlayerIndex= 1
     def Start_game(self):
-        pass
+        getStartMenu= self.menu.Start_menu()
+        if getStartMenu == "1":
+            self.Setup_players()
+            self.Play_game()
+        elif getStartMenu == "2":
+            self.Quit_game()
+        else:
+            print("Invalid input just (1 or 2)")
+    def Setup_players(self):
+        for number, player in enumerate(self.players, start=1):
+            print(f"Player {number} enter your details:")
+            player.Choose_name()
+            player.Choose_symbol()
+            Clean_screen()
+    def Play_game(self):
+        while True:
+            self.Play_turn()
+            if self.Check_win or self.Check_draw:
+                getEndGamemenu= self.menu.End_menu()               
+                if getEndGamemenu == "1":
+                    self.Restart_game()     
+                elif getEndGamemenu == "2":
+                    self.Quit_game()
+                    break   # back
+                else:
+                    print("invalid choice, make sure you input 1 or 2 only !")
+
+            else:
+
     def Play_turn(self):
+        self.currentPlayerIndex = 1 - self.currentPlayerIndex
+    def Check_win(self)-> bool:
         pass
-    def Check_win(self):
-        pass
-    def Check_draw(self):
-        pass
-    def Restart_game(slef):
-        pass
+    def Check_draw(self)-> bool:
+        checkBoardList= [i for i in self.board.board if i.isdigit()]
+        if len(checkBoardList) == 0:
+            print("<< !Game Draw! >>")
+        
+    def Restart_game(self):
+        self.currentPlayerIndex= 1
+        self.board.board= [str(i) for i in range(1, 10)]
+        self.Start_game()
     def Quit_game(self):
-        pass
+        print("Quiting The Game .")
 
 
-x = Board.Display_board()
-
+OJ = Game().Start_game()
