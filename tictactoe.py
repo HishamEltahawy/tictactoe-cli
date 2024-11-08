@@ -114,6 +114,7 @@ class Game:
                     print("invalid choice, make sure you input 1 or 2 only !")
 
     def Play_turn(self):
+        Clean_screen()
         player = self.players[self.currentPlayerIndex]
         self.board.Display_board()
         print(f"{player.name} this is your turn >>")
@@ -133,12 +134,14 @@ class Game:
             [0,3,6], [1,4,7], [2,5,8], # colomn
             [0,4,8], [2,4,6]            #diagonals
         ]
-        for combo in winsProbabilities:
-            if self.board.board[combo[0]] == self.board.board[combo[1]] == self.board.board[combo[2]]:
-                print(f">> Congratulations '{self.board.board[combo[0]]}' you wins <<")
-                return True
-            else:
-                return False
+        if True:
+            for combo in winsProbabilities:
+                if self.board.board[combo[0]] == self.board.board[combo[1]] == self.board.board[combo[2]]:
+                    print(f">> Congratulations '{self.board.board[combo[0]]}' you wins <<")
+                    return True
+        else:
+            return False
+        
     def Check_draw(self)-> bool:
         checkBoardList= [i for i in self.board.board if i.isdigit()]
         if len(checkBoardList) == 0:
