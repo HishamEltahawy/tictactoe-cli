@@ -16,6 +16,7 @@ Game Logic:
     7- restart game, quit game
 """
 import os
+import time
 
 def Clean_screen():
     os.system("cls" if os.name == "nt" else "clean")
@@ -67,26 +68,25 @@ class Board:
 class Menu(): # Composition with Game
     def Start_menu(self) -> str:
         menu1Choice= input("""1- Start game
-2- Quit game""")
+2- Quit game: """)
         while True:
             if menu1Choice.isdigit() and len(menu1Choice) == 1:
                 return menu1Choice
     def End_menu(self) -> str:
         menu1Choice= input("""1- Restart game
-2- Quit game""")
+2- Quit game: """)
         while True:
             if menu1Choice.isdigit() and len(menu1Choice) == 1:
-                menu1Choice.append()
-                return        
+                return menu1Choice    
 
 class Game:
     def __init__(self):
         self.players= [Player(), Player()]
         self.board= Board()
         self.menu= Menu()
-        self.currentPlayerIndex= 1
+        self.currentPlayerIndex= 0
     def Start_game(self):
-        getStartMenu= self.menu.Start_menu()
+        getStartMenu= self.menu.Start_menu()    
         if getStartMenu == "1":
             self.Setup_players()
             self.Play_game()
@@ -103,7 +103,7 @@ class Game:
     def Play_game(self):
         while True:
             self.Play_turn()
-            if self.Check_win or self.Check_draw:
+            if self.Check_win() or self.Check_draw():
                 getEndGamemenu= self.menu.End_menu()               
                 if getEndGamemenu == "1":
                     self.Restart_game()     
@@ -112,8 +112,7 @@ class Game:
                     break   # back
                 else:
                     print("invalid choice, make sure you input 1 or 2 only !")
-            else:
-                pass
+
     def Play_turn(self):
         player = self.players[self.currentPlayerIndex]
         self.board.Display_board()
@@ -121,7 +120,7 @@ class Game:
         while True:
             try:
                 choice = int(input("Choose a number (1-9)"))
-                if 1<= choice  >= 9 and self.board.Update_board(choice, player.symbol):
+                if 1<= choice  <= 9 and self.board.Update_board(choice, player.symbol):
                     break
             except ValueError:
                 print("Invalid move, try again")
@@ -136,20 +135,30 @@ class Game:
         ]
         for combo in winsProbabilities:
             if self.board.board[combo[0]] == self.board.board[combo[1]] == self.board.board[combo[2]]:
+                print(f">> Congratulations '{self.board.board[combo[0]]}' you wins <<")
                 return True
             else:
                 return False
     def Check_draw(self)-> bool:
         checkBoardList= [i for i in self.board.board if i.isdigit()]
         if len(checkBoardList) == 0:
-            print("<< !Game Draw! >>")
-        
+            print(">> What! no one wins <<")
+            return True
     def Restart_game(self):
-        self.currentPlayerIndex= 1
+        self.currentPlayerIndex= 0
         self.board.board= [str(i) for i in range(1, 10)]
-        self.Start_game()
+        self.Play_game()
     def Quit_game(self):
+        Clean_screen()
         print("Quiting The Game .")
-
+        time.sleep(1)
+        Clean_screen()
+        print("Quiting The Game ..")
+        time.sleep(1)
+        Clean_screen()       
+        print("Quiting The Game ...")
+        time.sleep(1)
+        Clean_screen()
+        
 
 OJ = Game().Start_game()
