@@ -52,8 +52,13 @@ class Board:
             print("|".join(self.board[i:i+3]))
             if i <9:              
                 print("-" * 5) 
-    def Update_board(self, move, symbol):
-        self.board[move- 1] = symbol if self.Is_valid_move() == True else print("This place is busy")
+    def Update_board(self, move, symbol):       
+        # return (self.board.__setitem__(move - 1, symbol) or True) if self.Is_valid_move() else (print("This place is busy") or False)
+        if self.Is_valid_move(move):
+            self.board[move - 1] = symbol
+            return True
+        else:            
+            return False
     def Is_valid_move(self, move):
         return self.board[move-1].isdigit()
     def Reset_board(self):
@@ -107,13 +112,33 @@ class Game:
                     break   # back
                 else:
                     print("invalid choice, make sure you input 1 or 2 only !")
-
             else:
-
+                pass
     def Play_turn(self):
+        player = self.players[self.currentPlayerIndex]
+        self.board.Display_board()
+        print(f"{player.name} this is your turn >>")
+        while True:
+            try:
+                choice = int(input("Choose a number (1-9)"))
+                if 1<= choice  >= 9 and self.board.Update_board(choice, player.symbol):
+                    break
+            except ValueError:
+                print("Invalid move, try again")
+        self.Switch_player()
+    def Switch_player(self):
         self.currentPlayerIndex = 1 - self.currentPlayerIndex
     def Check_win(self)-> bool:
-        pass
+        winsProbabilities= [
+            [0,1,2], [3,4,5], [6,7,8], # rows
+            [0,3,6], [1,4,7], [2,5,8], # colomn
+            [0,4,8], [2,4,6]            #diagonals
+        ]
+        for combo in winsProbabilities:
+            if self.board.board[combo[0]] == self.board.board[combo[1]] == self.board.board[combo[2]]:
+                return True
+            else:
+                return False
     def Check_draw(self)-> bool:
         checkBoardList= [i for i in self.board.board if i.isdigit()]
         if len(checkBoardList) == 0:
